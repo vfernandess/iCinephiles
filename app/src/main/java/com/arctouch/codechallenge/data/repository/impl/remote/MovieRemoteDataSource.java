@@ -2,7 +2,6 @@ package com.arctouch.codechallenge.data.repository.impl.remote;
 
 import com.arctouch.codechallenge.BuildConfig;
 import com.arctouch.codechallenge.data.model.Genre;
-import com.arctouch.codechallenge.data.model.GenreResponse;
 import com.arctouch.codechallenge.data.model.Movie;
 import com.arctouch.codechallenge.data.model.UpcomingMoviesResponse;
 import com.arctouch.codechallenge.data.net.TmdbApi;
@@ -15,31 +14,12 @@ import java.util.Locale;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
-public class MovieRemoteDataSource implements MovieDataSource, MovieDataSource.RemoteDataSource {
+public class MovieRemoteDataSource implements MovieDataSource.RemoteDataSource {
 
     private final TmdbApi mApi;
 
     public MovieRemoteDataSource(final TmdbApi api) {
         mApi = api;
-    }
-
-    @Override
-    public Observable<List<Movie>> getMovies(final long page, final Locale locale) {
-
-        final Observable<GenreResponse> genreObservable =
-                mApi.genres(BuildConfig.API_KEY, locale.getLanguage())
-                        .subscribeOn(Schedulers.io());
-
-
-        final Observable<UpcomingMoviesResponse> moviesObservable = mApi
-                .upcomingMovies(BuildConfig.API_KEY, locale.getLanguage(), page, locale.getCountry())
-                .subscribeOn(Schedulers.io());
-
-        return Observable.zip(genreObservable, moviesObservable, this::mergeResponses);
-    }
-
-    private List<Movie> mergeResponses(final GenreResponse genreResponse, final UpcomingMoviesResponse upcomingMoviesResponse) {
-        return buildMovies(genreResponse.genres, upcomingMoviesResponse);
     }
 
     @Override
@@ -49,6 +29,15 @@ public class MovieRemoteDataSource implements MovieDataSource, MovieDataSource.R
                 .subscribeOn(Schedulers.io())
                 .flatMap(upcomingMoviesResponse ->
                         Observable.just(buildMovies(genres, upcomingMoviesResponse))
+                );
+    }
+
+    @Override
+    public Observable<List<Genre>> getGenres(final Locale locale) {
+        return mApi
+                .genres(BuildConfig.API_KEY, locale.toLanguageTag())
+                .flatMap(
+                        genreResponse -> Observable.just(genreResponse.genres)
                 );
     }
 

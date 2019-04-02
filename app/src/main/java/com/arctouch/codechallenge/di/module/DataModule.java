@@ -47,8 +47,8 @@ public class DataModule {
 
     @Provides
     public MovieDataSource providesMovieDataSource() {
-        final MovieDataSource local = new MovieLocalDataSource();
-        final MovieDataSource remote = new MovieRemoteDataSource(mApi);
+        final MovieDataSource.LocalDataSource local = new MovieLocalDataSource();
+        final MovieDataSource.RemoteDataSource remote = new MovieRemoteDataSource(mApi);
         return new MovieRepository(local, remote);
     }
 

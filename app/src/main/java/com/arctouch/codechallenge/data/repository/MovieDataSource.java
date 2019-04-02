@@ -16,11 +16,17 @@ public interface MovieDataSource {
 
         Observable<List<Movie>> getMovies(final long page, final List<Genre> genres, final Locale locale);
 
+        Observable<List<Genre>> getGenres(final Locale locale);
+
     }
 
-    interface LocalDataSource {
+    interface LocalDataSource extends MovieDataSource {
 
         Observable<List<Genre>> getGenres();
+
+        void saveGenres(final List<Genre> genres);
+
+        void saveMovies(final List<Movie> movies);
 
     }
 
