@@ -42,6 +42,11 @@ public class MovieRemoteDataSource implements MovieDataSource.RemoteDataSource {
                 );
     }
 
+    @Override
+    public Observable<Movie> getMovie(final long id, final Locale locale) {
+        return mApi.movie(id, BuildConfig.API_KEY, getLanguageTag(locale));
+    }
+
     private List<Movie> buildMovies(final List<Genre> genres, final UpcomingMoviesResponse upcomingMoviesResponse) {
         final List<Movie> movies = new ArrayList<>();
 

@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import com.arctouch.codechallenge.R;
 import com.arctouch.codechallenge.databinding.HomeActivityBinding;
 import com.arctouch.codechallenge.view.BaseActivity;
+import com.arctouch.codechallenge.view.feature.detail.view.DetailActivity;
 import com.arctouch.codechallenge.view.feature.home.viewmodel.HomeViewModel;
 import com.arctouch.codechallenge.view.util.EndlessRecyclerViewScrollListener;
 import com.arctouch.codechallenge.view.util.MarginItemDecoration;
@@ -25,7 +26,7 @@ public class HomeActivity extends BaseActivity {
             new Observable.OnPropertyChangedCallback() {
                 @Override
                 public void onPropertyChanged(final Observable sender, final int propertyId) {
-
+                    DetailActivity.start(HomeActivity.this, mViewModel.onMovieSelected.get());
                 }
             };
 
