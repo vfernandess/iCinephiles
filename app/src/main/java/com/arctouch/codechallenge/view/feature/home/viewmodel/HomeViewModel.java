@@ -26,19 +26,15 @@ public class HomeViewModel implements MovieAdapter.MovieItemDataSource {
 
     public final ObservableField<Integer> newMoviesStartAt;
     public final ObservableField<Integer> newMoviesCount;
-
-    public final ObservableField<State> state;
     public final ObservableField<Parcelable> onMovieSelected;
-
-
+    public final ObservableField<State> state;
     public final List<MovieItemViewModel> movies;
-
     public long mCurrentPage;
+
+    private final List<Disposable> mDisposables;
 
     @Inject
     MovieDataSource mMovieDataSource;
-
-    private final List<Disposable> mDisposables;
 
     @Inject
     HomeViewModel() {
@@ -81,8 +77,9 @@ public class HomeViewModel implements MovieAdapter.MovieItemDataSource {
         requireNonNull(this.state.get()).setLoadingMoreEnabled(false);
 
         final int startAt = this.movies.size();
+
         for (final Movie movie : movies) {
-            this.movies.add(new MovieItemViewModel(movie));
+            this.movies.add(new MovieItemViewModel(movie, this::onMovieSelected));
         }
 
         if (movies.size() > 0) {
@@ -92,7 +89,20 @@ public class HomeViewModel implements MovieAdapter.MovieItemDataSource {
 
     }
 
+    private void onMovieSelected(final Movie movie) {
+        this.onMovieSelected.set(movie);
+    }
+
+    @SuppressWarnings("unused")
     private void onMoviesError(final Throwable throwable) {
+        if(mCurrentPage <= 1) {
+            this.state.get().toggleError();
+        }
+
+
+        if(mCurrentPage > 0) {
+            mCurrentPage--;
+        }
     }
 
     public void onDestroy() {
@@ -119,8 +129,6 @@ public class HomeViewModel implements MovieAdapter.MovieItemDataSource {
 
         public final ObservableBoolean showFullError = new ObservableBoolean(false);
 
-        public final ObservableBoolean showLoadMoreError = new ObservableBoolean(false);
-
         void setLoadingEnabled(final boolean enabled) {
             this.loading.set(enabled);
         }
@@ -129,9 +137,9 @@ public class HomeViewModel implements MovieAdapter.MovieItemDataSource {
             this.loadingMore.set(enabled);
         }
 
-//        void toggleError() {
-//            this.showError.set(!this.showError.get());
-//        }
+        void toggleError() {
+            this.showFullError.set(!this.showFullError.get());
+        }
 
     }
 

@@ -18,8 +18,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/movies"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
+            android:layout_height="@dimen/size_00x"
             android:paddingTop="@dimen/size_01_5x"
             android:paddingBottom="@dimen/size_01_5x"
             app:gone="@{viewModel.state.loading}"
@@ -37,6 +36,7 @@
             android:id="@+id/loading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:indeterminate="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

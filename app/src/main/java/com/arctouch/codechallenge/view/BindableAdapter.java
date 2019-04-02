@@ -10,7 +10,7 @@ public abstract class BindableAdapter<VDB extends ViewDataBinding> extends Recyc
 
     @Override
     public BindableViewHolder<VDB> onCreateViewHolder(final ViewGroup parent, final int viewType) {
-        final VDB binding = inflate(parent.getContext());
+        final VDB binding = inflate(parent.getContext(), parent);
         return new BindableViewHolder<>(binding);
     }
 
@@ -23,6 +23,6 @@ public abstract class BindableAdapter<VDB extends ViewDataBinding> extends Recyc
 
     protected abstract void onBindViewHolder(final BindableViewHolder holder, final VDB binding, final int position);
 
-    protected abstract VDB inflate(final Context context);
+    protected abstract VDB inflate(final Context context, final ViewGroup parent);
 
 }
