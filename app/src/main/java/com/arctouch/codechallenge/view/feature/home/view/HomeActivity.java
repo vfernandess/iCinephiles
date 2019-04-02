@@ -14,6 +14,8 @@ import javax.inject.Inject;
 
 public class HomeActivity extends BaseActivity {
 
+    private static final String EXTRA_CURRENT_PAGE = "EXTRA_CURRENT_PAGE";
+
     private final Observable.OnPropertyChangedCallback onMovieSelectedCallback =
             new Observable.OnPropertyChangedCallback() {
                 @Override
@@ -43,6 +45,7 @@ public class HomeActivity extends BaseActivity {
         getActivityComponent().inject(this);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.home_activity);
+        mBinding.setViewModel(mViewModel);
 
         mAdapter.setDataSource(mViewModel);
         mBinding.movies.setAdapter(mAdapter);
@@ -50,33 +53,22 @@ public class HomeActivity extends BaseActivity {
         mViewModel.onMovieSelected.addOnPropertyChangedCallback(onMovieSelectedCallback);
         mViewModel.state.get().showLoadMoreError.addOnPropertyChangedCallback(onLoadMoreErrorCallback);
 
-        getLifecycle().addObserver(mViewModel);
-
-//        this.recyclerView = findViewById(R.id.recyclerView);
-//        this.progressBar = findViewById(R.id.progressBar);
-//
-//        api.upcomingMovies(TmdbApi.API_KEY, TmdbApi.DEFAULT_LANGUAGE, 1L, TmdbApi.DEFAULT_REGION)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(response -> {
-//                    for (Movie movie : response.results) {
-//                        movie.genres = new ArrayList<>();
-//                        for (Genre genre : Cache.getGenres()) {
-//                            if (movie.genreIds.contains(genre.id)) {
-//                                movie.genres.add(genre);
-//                            }
-//                        }
-//                    }
-//
-//                    recyclerView.setAdapter(new HomeAdapter(response.results));
-//                    progressBar.setVisibility(View.GONE);
-//                });
+        final long page = savedInstanceState == null ?
+                HomeViewModel.NONE : savedInstanceState.getLong(EXTRA_CURRENT_PAGE, HomeViewModel.NONE);
+        mViewModel.load(page);
     }
 
     @Override
     protected void onDestroy() {
         mViewModel.onMovieSelected.removeOnPropertyChangedCallback(onMovieSelectedCallback);
         mViewModel.state.get().showLoadMoreError.removeOnPropertyChangedCallback(onLoadMoreErrorCallback);
+        mViewModel.onDestroy();
         super.onDestroy();
+    }
+
+    @Override
+    protected void onSaveInstanceState(final Bundle outState) {
+        outState.putLong(EXTRA_CURRENT_PAGE, mViewModel.mCurrentPage);
+        super.onSaveInstanceState(outState);
     }
 }

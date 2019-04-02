@@ -1,9 +1,5 @@
 package com.arctouch.codechallenge.view.feature.home.viewmodel;
 
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleObserver;
-import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.OnLifecycleEvent;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.os.Parcelable;
@@ -18,13 +14,15 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 import static java.util.Objects.requireNonNull;
 
-public class HomeViewModel implements LifecycleObserver, MovieAdapter.MovieItemDataSource {
+public class HomeViewModel implements MovieAdapter.MovieItemDataSource {
 
-    private static final int NONE = -1;
+    public static final int NONE = -1;
 
     public final ObservableField<Integer> newMoviesStartAt;
     public final ObservableField<Integer> newMoviesCount;
@@ -35,7 +33,7 @@ public class HomeViewModel implements LifecycleObserver, MovieAdapter.MovieItemD
 
     public final List<MovieItemViewModel> movies;
 
-    private long mCurrentPage;
+    public long mCurrentPage;
 
     @Inject
     MovieDataSource mMovieDataSource;
@@ -53,16 +51,10 @@ public class HomeViewModel implements LifecycleObserver, MovieAdapter.MovieItemD
         mDisposables = new ArrayList<>();
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    public void onCreate(final LifecycleOwner owner) {
-//        owner.getLifecycle().getCurrentState() == Lifecycle.State.INITIALIZED
-        load();
-    }
-
-    public void load() {
+    public void load(final long page) {
         requireNonNull(this.state.get()).setLoadingEnabled(true);
         requireNonNull(this.state.get()).setLoadingMoreEnabled(false);
-        mCurrentPage = 1;
+        mCurrentPage = page == NONE ? 1 : page;
         getPage(mCurrentPage);
     }
 
@@ -76,9 +68,11 @@ public class HomeViewModel implements LifecycleObserver, MovieAdapter.MovieItemD
     private void getPage(final long page) {
         final Disposable disposable = mMovieDataSource
                 .getMovies(page, Locale.getDefault())
-                .subscribe(movies -> {
-
-                });
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        this::onMoviesLoaded,
+                        this::onMoviesError);
         mDisposables.add(disposable);
     }
 
@@ -86,13 +80,21 @@ public class HomeViewModel implements LifecycleObserver, MovieAdapter.MovieItemD
         requireNonNull(this.state.get()).setLoadingEnabled(false);
         requireNonNull(this.state.get()).setLoadingMoreEnabled(false);
 
+        final int startAt = this.movies.size();
+        for (final Movie movie : movies) {
+            this.movies.add(new MovieItemViewModel(movie));
+        }
+
+        if (movies.size() > 0) {
+            this.newMoviesStartAt.set(startAt);
+            this.newMoviesCount.set(movies.size());
+        }
+
     }
 
-    private void onMoviesError() {
-//        requireNonNull(this.state.get()).toggleError();
+    private void onMoviesError(final Throwable throwable) {
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     public void onDestroy() {
         for (final Disposable disposable : mDisposables) {
             disposable.dispose();
