@@ -1,8 +1,8 @@
-package com.arctouch.codechallenge.api;
+package com.arctouch.codechallenge.data.net;
 
-import com.arctouch.codechallenge.model.GenreResponse;
-import com.arctouch.codechallenge.model.Movie;
-import com.arctouch.codechallenge.model.UpcomingMoviesResponse;
+import com.arctouch.codechallenge.data.model.GenreResponse;
+import com.arctouch.codechallenge.data.model.Movie;
+import com.arctouch.codechallenge.data.model.UpcomingMoviesResponse;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
@@ -11,7 +11,7 @@ import retrofit2.http.Query;
 
 public interface TmdbApi {
 
-    String URL = "https://api.themoviedb.org/3/";
+    String URL = "";
     String API_KEY = "1f54bd990f1cdfb230adb312546d765d";
     String DEFAULT_LANGUAGE = "pt-BR";
     String DEFAULT_REGION = "BR";

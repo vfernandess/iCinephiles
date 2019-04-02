@@ -1,10 +1,12 @@
-package com.arctouch.codechallenge.model;
+package com.arctouch.codechallenge.data.model;
 
+import com.arctouch.codechallenge.BuildConfig;
 import com.squareup.moshi.Json;
 
 import java.util.List;
 
 public class Movie {
+
     public int id;
     public String title;
     public String overview;
@@ -54,15 +56,15 @@ public class Movie {
 
     @Override
     public String toString() {
-        return "Movie{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", overview='" + overview + '\'' +
-                ", genres=" + genres +
-                ", genreIds=" + genreIds +
-                ", posterPath='" + posterPath + '\'' +
-                ", backdropPath='" + backdropPath + '\'' +
-                ", releaseDate='" + releaseDate + '\'' +
-                '}';
+        return title;
     }
+
+    public String getPosterURL() {
+        return String.format("%1$s%2$s?api_key=%3$s", BuildConfig.POSTER_URL, posterPath, BuildConfig.API_KEY);
+    }
+
+    public String getBackdropURL() {
+        return String.format("%1$s%2$s?api_key=%3$s", BuildConfig.BACKDROP_URL, backdropPath, BuildConfig.API_KEY);
+    }
+
 }
