@@ -19,16 +19,21 @@ public class MovieRepository implements MovieDataSource {
     }
 
     @Override
-    public Observable<List<Movie>> getMovies(final long page, final Locale locale) {
+    public Observable<List<Movie>> getMovies(final Locale locale) {
         return mLocalDataSource
-                .getMovies(page, locale)
+                .getMovies()
                 .flatMap(movies -> {
                     if (movies.isEmpty()) {
-                        return getRemoteMovies(page, locale);
+                        return getRemoteMovies(1, locale);
                     } else {
                         return Observable.just(movies);
                     }
                 });
+    }
+
+    @Override
+    public Observable<List<Movie>> getMoreMovies(final long page, final Locale locale) {
+        return getRemoteMovies(page, locale);
     }
 
     private Observable<List<Movie>> getRemoteMovies(final long page, final Locale locale) {

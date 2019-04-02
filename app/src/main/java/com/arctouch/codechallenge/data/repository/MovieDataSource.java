@@ -10,7 +10,9 @@ import io.reactivex.Observable;
 
 public interface MovieDataSource {
 
-    Observable<List<Movie>> getMovies(final long page, final Locale locale);
+    Observable<List<Movie>> getMovies(final Locale locale);
+
+    Observable<List<Movie>> getMoreMovies(final long page, final Locale locale);
 
     interface RemoteDataSource {
 
@@ -20,9 +22,11 @@ public interface MovieDataSource {
 
     }
 
-    interface LocalDataSource extends MovieDataSource {
+    interface LocalDataSource {
 
         Observable<List<Genre>> getGenres();
+
+        Observable<List<Movie>> getMovies();
 
         void saveGenres(final List<Genre> genres);
 

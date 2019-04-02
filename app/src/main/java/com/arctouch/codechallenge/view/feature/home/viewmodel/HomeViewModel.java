@@ -2,7 +2,7 @@ package com.arctouch.codechallenge.view.feature.home.viewmodel;
 
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
-import android.os.Parcelable;
+import android.databinding.ObservableInt;
 
 import com.arctouch.codechallenge.data.model.Movie;
 import com.arctouch.codechallenge.data.repository.MovieDataSource;
@@ -26,11 +26,11 @@ public class HomeViewModel implements MovieAdapter.MovieItemDataSource {
 
     public final ObservableField<Integer> newMoviesStartAt;
     public final ObservableField<Integer> newMoviesCount;
-    public final ObservableField<Parcelable> onMovieSelected;
+    public final ObservableInt onMovieSelected;
     public final ObservableField<State> state;
-    public final List<MovieItemViewModel> movies;
     public long mCurrentPage;
 
+    private final List<MovieItemViewModel> movies;
     private final List<Disposable> mDisposables;
 
     @Inject
@@ -38,7 +38,7 @@ public class HomeViewModel implements MovieAdapter.MovieItemDataSource {
 
     @Inject
     HomeViewModel() {
-        onMovieSelected = new ObservableField<>();
+        onMovieSelected = new ObservableInt(NONE);
         state = new ObservableField<>(new State());
         newMoviesStartAt = new ObservableField<>(NONE);
         newMoviesCount = new ObservableField<>(NONE);
@@ -51,19 +51,22 @@ public class HomeViewModel implements MovieAdapter.MovieItemDataSource {
         requireNonNull(this.state.get()).setLoadingEnabled(true);
         requireNonNull(this.state.get()).setLoadingMoreEnabled(false);
         mCurrentPage = page == NONE ? 1 : page;
-        getPage(mCurrentPage);
+        final Disposable disposable = mMovieDataSource
+                .getMovies(Locale.getDefault())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        this::onMoviesLoaded,
+                        this::onMoviesError);
+        mDisposables.add(disposable);
     }
 
     public void loadMore() {
         requireNonNull(this.state.get()).setLoadingEnabled(false);
         requireNonNull(this.state.get()).setLoadingMoreEnabled(true);
         mCurrentPage++;
-        getPage(mCurrentPage);
-    }
-
-    private void getPage(final long page) {
         final Disposable disposable = mMovieDataSource
-                .getMovies(page, Locale.getDefault())
+                .getMoreMovies(mCurrentPage, Locale.getDefault())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -90,7 +93,7 @@ public class HomeViewModel implements MovieAdapter.MovieItemDataSource {
     }
 
     private void onMovieSelected(final Movie movie) {
-        this.onMovieSelected.set(movie);
+        this.onMovieSelected.set(movie.id);
     }
 
     @SuppressWarnings("unused")
@@ -98,7 +101,6 @@ public class HomeViewModel implements MovieAdapter.MovieItemDataSource {
         if(mCurrentPage <= 1) {
             this.state.get().toggleError();
         }
-
 
         if(mCurrentPage > 0) {
             mCurrentPage--;

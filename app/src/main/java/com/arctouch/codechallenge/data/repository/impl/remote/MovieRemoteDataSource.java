@@ -8,6 +8,7 @@ import com.arctouch.codechallenge.data.net.TmdbApi;
 import com.arctouch.codechallenge.data.repository.MovieDataSource;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -25,7 +26,7 @@ public class MovieRemoteDataSource implements MovieDataSource.RemoteDataSource {
     @Override
     public Observable<List<Movie>> getMovies(final long page, final List<Genre> genres, final Locale locale) {
         return mApi
-                .upcomingMovies(BuildConfig.API_KEY, locale.getLanguage(), page, locale.getCountry())
+                .upcomingMovies(BuildConfig.API_KEY, getLanguageTag(locale), page, locale.getCountry())
                 .subscribeOn(Schedulers.io())
                 .flatMap(upcomingMoviesResponse ->
                         Observable.just(buildMovies(genres, upcomingMoviesResponse))
@@ -35,7 +36,7 @@ public class MovieRemoteDataSource implements MovieDataSource.RemoteDataSource {
     @Override
     public Observable<List<Genre>> getGenres(final Locale locale) {
         return mApi
-                .genres(BuildConfig.API_KEY, locale.toLanguageTag())
+                .genres(BuildConfig.API_KEY, getLanguageTag(locale))
                 .flatMap(
                         genreResponse -> Observable.just(genreResponse.genres)
                 );
@@ -54,7 +55,13 @@ public class MovieRemoteDataSource implements MovieDataSource.RemoteDataSource {
             movies.add(movie);
         }
 
+        Collections.sort(movies, (o1, o2) -> o1.releaseDate.compareTo(o2.releaseDate));
+
         return movies;
+    }
+
+    private String getLanguageTag(final Locale locale) {
+        return String.format("%1$s-%2$s", locale.getLanguage(), locale.getCountry());
     }
 
 }

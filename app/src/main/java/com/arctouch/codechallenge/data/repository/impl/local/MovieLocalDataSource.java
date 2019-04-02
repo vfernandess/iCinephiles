@@ -6,7 +6,6 @@ import com.arctouch.codechallenge.data.repository.MovieDataSource;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import io.reactivex.Observable;
 
@@ -17,11 +16,7 @@ public class MovieLocalDataSource implements MovieDataSource.LocalDataSource {
     private static final List<Genre> cachedGenres = new ArrayList<>();
 
     @Override
-    public Observable<List<Movie>> getMovies(final long page, final Locale locale) {
-//        if(page == 0) {
-//            cachedMovies.clear();
-//        }
-
+    public Observable<List<Movie>> getMovies() {
         return Observable.just(cachedMovies);
     }
 
