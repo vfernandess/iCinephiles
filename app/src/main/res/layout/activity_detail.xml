@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.arctouch.codechallenge.view.feature.detail.viewmodel.DetailViewModel"/>
+
+    </data>
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".view.feature.detail.view.DetailActivity">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.75"
+            android:scaleType="centerCrop"
+            app:srcURL="@{viewModel.backdrop}"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.7"
+            android:background="@drawable/cover_gradient"/>
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:elevation="@dimen/size_00x">
+
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/size_20x"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_gravity="top"
+                    android:gravity="top"
+                    app:elevation="@dimen/size_00x"
+                    app:layout_collapseMode="pin"
+                    app:navigationIcon="@drawable/ic_arrow_left"
+                    app:title="@{viewModel.name}"
+                    app:titleTextColor="@android:color/white"/>
+
+            </android.support.design.widget.CollapsingToolbarLayout>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/size_02x"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/cover"
+                    android:layout_width="@dimen/size_10x"
+                    android:layout_height="@dimen/size_15x"
+                    android:scaleType="centerInside"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcURL="@{viewModel.poster}"/>
+
+                <TextView
+                    android:id="@+id/release_date"
+                    android:layout_width="@dimen/size_00x"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/size_01x"
+                    android:layout_marginTop="@dimen/size_01x"
+                    android:ellipsize="end"
+                    android:text="@{viewModel.releaseDate}"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/cover"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="1991-10-06"/>
+
+                <TextView
+                    android:id="@+id/genres"
+                    android:layout_width="@dimen/size_00x"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/size_01x"
+                    android:layout_marginTop="@dimen/size_02x"
+                    android:ellipsize="end"
+                    android:text="@{viewModel.genres}"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/cover"
+                    app:layout_constraintTop_toBottomOf="@+id/release_date"
+                    tools:text="Action"/>
+
+                <TextView
+                    android:id="@+id/overview"
+                    android:layout_width="@dimen/size_00x"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/size_01x"
+                    android:layout_marginTop="@dimen/size_03x"
+                    android:text="@{viewModel.overview}"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cover"
+                    tools:text="Lorem Ipsum"/>
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+    </android.support.design.widget.CoordinatorLayout>
+</layout>
