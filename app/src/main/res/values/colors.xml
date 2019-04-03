@@ -5,4 +5,5 @@
     <color name="colorAccent">@color/colorPrimary</color>
     <color name="black_alpha_20">#33000000</color>
     <color name="black_alpha_10">#1A000000</color>
+    <color name="black_alpha_05">#03000000</color>
 </resources>

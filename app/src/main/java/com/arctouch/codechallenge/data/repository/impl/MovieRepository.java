@@ -40,11 +40,11 @@ public class MovieRepository implements MovieDataSource {
     public Observable<Movie> getMovie(final long id, final Locale locale) {
         return mLocalDataSource
                 .getMovie(id)
-                .flatMap(movie -> {
-                    if (movie == null) {
+                .flatMap(cache -> {
+                    if (cache.movie == null) {
                         return mRemoteDataSource.getMovie(id, locale);
                     } else {
-                        return Observable.just(movie);
+                        return Observable.just(cache.movie);
                     }
                 });
     }

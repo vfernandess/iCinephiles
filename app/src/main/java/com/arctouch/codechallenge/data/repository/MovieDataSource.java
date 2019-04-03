@@ -1,10 +1,12 @@
 package com.arctouch.codechallenge.data.repository;
 
+import com.arctouch.codechallenge.data.model.CachedMovie;
 import com.arctouch.codechallenge.data.model.Genre;
 import com.arctouch.codechallenge.data.model.Movie;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import io.reactivex.Observable;
 
@@ -32,7 +34,7 @@ public interface MovieDataSource {
 
         Observable<List<Movie>> getMovies();
 
-        Observable<Movie> getMovie(final long id);
+        Observable<CachedMovie> getMovie(final long id);
 
         void saveGenres(final List<Genre> genres);
 

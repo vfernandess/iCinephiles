@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.arctouch.codechallenge.R;
 import com.arctouch.codechallenge.databinding.ActivityDetailBinding;
@@ -35,7 +36,18 @@ public class DetailActivity extends BaseActivity {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
         mBinding.setViewModel(mViewModel);
 
+        setSupportActionBar(mBinding.toolbar);
+
         mViewModel.load(getIntent().getLongExtra(EXTRA_MOVIE, -1));
     }
 
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        if(item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }
