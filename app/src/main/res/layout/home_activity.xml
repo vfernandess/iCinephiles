@@ -17,7 +17,7 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/movies"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/size_00x"
             android:layout_height="@dimen/size_00x"
             android:paddingTop="@dimen/size_01_5x"
             android:paddingBottom="@dimen/size_01_5x"
@@ -32,16 +32,29 @@
             tools:itemCount="1"
             tools:listitem="@layout/movie_item"/>
 
-        <ProgressBar
-            android:id="@+id/loading"
-            android:layout_width="wrap_content"
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:indeterminate="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:visible="@{viewModel.state.loading}"/>
+            app:shimmer_enabled="@{viewModel.state.loading}">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include layout="@layout/placeholder_movie_item"/>
+
+                <include layout="@layout/placeholder_movie_item"/>
+
+                <include layout="@layout/placeholder_movie_item"/>
+
+            </LinearLayout>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
 
     </android.support.constraint.ConstraintLayout>
 </layout>
