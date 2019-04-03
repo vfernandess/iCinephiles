@@ -6,7 +6,6 @@ import com.arctouch.codechallenge.data.model.Movie;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 import io.reactivex.Observable;
 
