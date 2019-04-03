@@ -17,15 +17,13 @@
             android:label="@string/title_activity_detail"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name=".view.feature.splash.SplashActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:name=".view.feature.home.view.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.feature.home.view.HomeActivity" />
     </application>
 
 </manifest>
